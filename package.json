@@ -1,0 +1,9 @@
+{
+  "name": "js-training",
+  "version": "0.0.0",
+  "description": "JS Training",
+  "main": "server.js",
+  "author": {
+    "name": ""
+  }
+}

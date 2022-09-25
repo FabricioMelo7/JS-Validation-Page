@@ -1,0 +1,367 @@
+<!<!DOCTYPE html>
+
+<html>
+
+  <head>
+      <title>Payment</title>
+      <meta charset="UTF-8">
+      <meta name="description" content="Payment validation page">
+
+<!--Bellow is the CSS -->
+<style>
+html, body {
+    height:100%;
+    width:100%;
+    margin:0;
+    padding:0;
+}
+label {
+
+    margin-right:10px;
+}
+.table1
+    {
+    display:table;
+    text-align:center;
+    width:100%;
+    height:100%;
+    table-layout:fixed;
+    }
+
+  .table2
+    {
+      display:table-cell;
+      vertical-align:middle;
+    }
+
+body
+  {
+  font-family: Calibri, sans-serif;
+  font-size: 16px;
+  }
+
+form
+  {
+      display:inline-block;
+      border:8px solid black;
+      width: 450px;
+      padding:50px 0;
+      background: grey;
+      border-radius: 35px;
+  }
+input
+ {
+      margin-bottom:15px;
+  }
+
+</style>
+
+  </head>
+<body class="body" >
+  <div class="table1">
+    <div class="table2">
+      <form id="form1" action="index.html">
+        <h4> Please enter you details</h4>
+
+       <label for="uNameFieldId"><b>Name:</b></label>
+       <input type="text" id="uNameFieldId" size='18' name="uNameField" onblur="return NameValidation()" onchange="return NameFormValidation()" >
+
+       <!-- Bellow is the input field for the user's Email -->
+       <label for="uemailId"><b>Email:</b><label>
+       <input type="text" id="uEmailId" size='18' name="uEmail" onchange="return EmailFormValidation()"><br><br>
+
+      <!-- Bellow is the input fields for the card details -->
+      <!-- First is the name of the person's card -->
+      <label for="uNameOnCardId"> <b>Name on card:</b> <label>
+      <input type="text" id="uNameOnCardId" size='18' name="uNameOnCard" onblur="SqlNameOnCardValidation()" onchange="return NameOnCardValidation()"><br>
+      <!-- Next is the Card number -->
+      <label for"uCardNumberId"> <b>Card Number:</b> <label>
+      <input inputmode="numeric" id="uCardNumberId" size='18' name="uCardNumber" onblur="CardnumberSqlValidation()"onchange="return CardNumberValidation()" ><br>
+      <!-- Next to the card number field there will be the CVV -->
+      <label for="uCvvId"> <b>CVV:</b> <label>
+      <input inputmode="numeric" maxlength="3"id="uCvvId" size='18' name="uCvv" onblur="CvvSqlValidation()" nonchange="return CvvNumberValidation()">
+      <!-- This will be the expiry date field -->
+      <label for="uCardExpiryId"> <b>Expiry Date:<b> <label>
+      <input type="month" min="2022-01" id="uCardExpiryId" size='18' name="uCardExpiry" onchange="return EmailFormValidation()"><br>
+
+      <!-- Bellow is the Submit button -->
+      <button style="background: pink;" size='18' onclick="luhnCheckValidation()">Submit</button>
+
+   </form>
+  </div>
+ </div>
+</body>
+<script>
+// Name Validation
+function NameFormValidation()
+  {
+
+      var un =document.getElementById('uNameFieldId').value;
+      if(un == "	")
+      {
+          alert('Please Enter Name');
+          document.getElementById('uNameFieldId').style.borderColor = "pink";
+          return false;
+      }
+      else
+      {
+          document.getElementById('uNameFieldId').style.borderColor = "green";
+      }
+      if (/\d/.test(document.getElementById("uNameFieldId").value))
+      {
+          alert("Name Contains Numbers!");
+          document.getElementById('uNameFieldId').style.borderColor = "pink";
+          return false;
+      }
+      else
+      {
+          document.getElementById('uNameFieldId').style.borderColor = "green";
+      }
+      if(un.length <=2)
+      {
+          alert('Your Name is To Short');
+          document.getElementById('uNameFieldId').style.borderColor = "pink";
+          return false;
+      }
+      else
+      {
+          document.getElementById('uNameFieldId').style.borderColor = "green";
+      }
+    }
+
+//Email Validation
+function EmailFormValidation()
+  {
+    var email =document.getElementById('uNameFieldId').value;
+    if(email == "	")
+    {
+      alert('Please Enter your email');
+      document.getElementById('uEmailId').style.borderColor = "pink";
+      return false;
+    }
+    else
+    {
+      document.getElementById('uEmailId').style.borderColor = "green";
+    }
+    //Bellow is protection against SQL injection
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById("uEmailId").value))
+    {
+      document.getElementById('uEmailId').style.borderColor = "green";
+      return true;
+    }
+    else
+    {
+      alert("Enter Valid Email");
+      document.getElementById('uEmailId').style.borderColor = "pink";
+    }
+    if(email.length <=3)
+    {
+      alert('Your Name is To Short');
+      document.getElementById('uEmailId').style.borderColor = "pink";
+      return false;
+    }
+    else
+    {
+      document.getElementById('uEmailId').style.borderColor = "green";
+    }
+  }
+
+//Name on Card Validation
+function NameOnCardValidation()
+  {
+  var noc =document.getElementById('uNameOnCardId').value;
+  if(noc == "	")
+  {
+      alert('Please Enter The Name');
+      document.getElementById('uNameOnCardId').style.borderColor = "pink";
+      return false;
+  }
+  else
+  {
+      document.getElementById('uNameOnCardId').style.borderColor = "green";
+  }
+  if (/\d/.test(document.getElementById("uNameOnCardId").value))
+  {
+      alert("Name Contains Numbers!");
+      document.getElementById('uNameOnCardId').style.borderColor = "pink";
+      return false;
+  }
+  else
+  {
+      document.getElementById('uNameOnCardId').style.borderColor = "green";
+  }
+  if(noc.length <=2)
+  {
+      alert('Your Name is To Short');
+      document.getElementById('uNameOnCardId').style.borderColor = "pink";
+      return false;
+  }
+  else
+  {
+      document.getElementById('uNameOnCardId').style.borderColor = "green";
+  }
+  }
+
+//Card number Validation
+function CardNumberValidation()
+
+    {
+      var cn =document.getElementById('uCardNumberId').value;
+      if(cn == "	")
+      {
+        alert('Please Enter Valid Card Number');
+        document.getElementById('uCardNumberId').style.borderColor = "pink";
+        return false;
+      }
+
+      if (/[A-Za-z]/.test(document.getElementById("uCardNumberId").value))
+      {
+        alert("Number Contains Letters")
+        document.getElementById('uCardNumberId').style.borderColor = "pink";
+        return false;
+      }
+
+      if(cn.length <=15 )
+      {
+        alert('Card Number is Too Short');
+        document.getElementById('uCardNumberId').style.borderColor = "pink";
+        return false;
+      }
+      else if (cn.length > 16)
+      {
+        alert('Card Number is too Long');
+        document.getElementById('uCardNumberId').style.borderColor ="pink";
+      }
+
+    }
+
+//Card CVV validation
+function CvvNumberValidation()
+  {
+    var cvv =document.getElementById('uCardNumberId').value;
+    if(cvv == "	")
+    {
+      alert('Please Enter Valid CVV Number');
+      document.getElementById('uCvvId').style.borderColor = "pink";
+      return false;
+    }
+    else
+    {
+      document.getElementById('uCvvId').style.borderColor = "green";
+    }
+    if (/[A-Za-z]/.test(document.getElementById("uCvvId").value))
+    {
+      alert("Number Contains Letters")
+      document.getElementById('uCvvId').style.borderColor = "pink";
+      return false;
+    }
+    else
+    {
+      document.getElementById('uCvvId').style.borderColor = "green";
+    }
+    if(cvv.length <=2)
+    {
+      alert('CVV Number is Too Short');
+      document.getElementById('uCvvId').style.borderColor = "pink";
+      return false;
+    }
+    else
+    {
+      document.getElementById('uCvvId').style.borderColor = "green";
+    }
+  }
+
+//Luhn Check validation
+var luhnNum= function luhnCheckValidation2()
+  {
+	let nCheck = 0, bEven = false;
+	value = value.replace(/\D/g, "");
+
+	for (var n = value.length - 1; n >= 0; n--) {
+		var cDigit = value.charAt(n),
+			  nDigit = parseInt(cDigit, 10);
+
+		if (bEven && (nDigit *= 2) > 9) nDigit -= 9;
+
+		nCheck += nDigit;
+		bEven = !bEven;
+	}
+	return (nCheck % 10) == 0;
+  }
+
+  if (luhnNum=false)
+  {
+        alert('Card Number is Invalid');
+        document.getElementById('uCardNumberId').style.borderColor= 'pink';
+  }
+
+//SQL protection
+//Name Field
+function NameValidation()
+    {
+      var checkString = document.getElementById('uNameFieldId').value;
+      if (checkString != "")
+      {
+      if ( /[^A-Za-z\d]/.test(checkString))
+        {
+          alert("Please enter only letter and numeric characters");
+          document.getElementById('uNameFieldId').style.borderColor= "pink";
+          return (false);
+        }
+
+
+      }
+    }
+
+//Name on card Field
+function SqlNameOnCardValidation()
+    {
+      var checkString = document.getElementById('uNameOnCardId').value;
+      if (checkString != "")
+      {
+      if ( /[^A-Za-z\d]/.test(checkString))
+          {
+          alert("Please enter only letter and numeric characters");
+          document.getElementById('uNameOnCardId').style.borderColor= "pink";
+          return (false);
+          }
+        }
+      }
+
+//Card Number field
+function CardnumberSqlValidation()
+  {
+  var cardNumString = document.getElementById('uCardNumberId').value;
+  var reg = new RegExp('^[0-9]*$');
+
+  if (reg.test(cardNumString)==false)
+  {
+    alert('Please only use numbers');
+    document.getElementById('uCardNumberId').style.borderColor='pink';
+    return false;
+    }
+  }
+
+//CVV number field
+function CvvSqlValidation()
+  {
+  var cardNumString = document.getElementById('uCvvId').value;
+  var reg = new RegExp('^[0-9]*$');
+
+  if (reg.test(cardNumString)==false)
+  {
+    alert('Please only use numbers');
+    document.getElementById('uCvvId').style.borderColor='pink';
+    return false;
+    }
+  }
+
+
+
+
+
+
+
+
+</script>
+</html>
